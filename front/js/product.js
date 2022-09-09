@@ -52,37 +52,28 @@ const detailProductData = async () => {
 // Remplissage de la page produit
 
 const fillProductPage = async () => {
-    const $item__img = document.getElementsByClassName('item__img');
+    const product = await detailProductData();
+
+    const $item__img = document.querySelector('.item__img');
     const $title = document.getElementById('title');
-    const $price = document.getElementById ('price');
+    const $price = document.getElementById('price');
     const $description = document.getElementById('description');
     const $select = document.querySelector('select');
 
     const $img = document.createElement('img');
-    const $createNewOption = () => document.createElement('option');
-
-    const product = await detailProductData();
-
-    $img.setAttribute('src', await product.imageUrl);
-    $img.setAttribute('alt', await product.altTxt);
-    $item__img[0].appendChild($img);
+    $img.src = await product.imageUrl;
+    $img.alt = await product.altTxt;
+    $item__img.appendChild($img);
 
     $title.innerText = await product.name;
     $price.innerText = await product.price;
     $description.innerText = await product.description;
-    const $newOption = $createNewOption();
-    $newOption.setAttribute('value', 'blue');
-    $newOption.innerText = 'blue';
-    $select.appendChild = $newOption;
-
-    // await product.colors.forEach(function (element, index) {
-    //     const $newOption = $createNewOption();
-    //     $newOption.setAttribute('value', element);
-    //     $select.appendChild = $newOption;
-    //     console.log(product.colors[index]);
-    //     console.log($newOption);
-    //     console.table(element);
-    // });
-    console.log($select);
+    for (let color of await product.colors){
+        $select.insertAdjacentHTML(
+            'beforeend',
+            `<option value =${color}>${color}</option>`
+        );
+    }
+    
 };
 fillProductPage();
