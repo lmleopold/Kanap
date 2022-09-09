@@ -1,14 +1,3 @@
-// Connexion à l'API
-
-const retrieveProductsData = async () => {
-    try {
-        const res = await fetch('http://localhost:3000/api/products');
-        return await res.json();
-    } catch (err) {
-        console.alert('Argh!\nUne erreur!\n\n' + err);
-    }
-};
-
 // Récupération de l'ID du produit à afficher via l'URL
 
 const str = window.location.href;
@@ -21,22 +10,21 @@ if (searchParams.has('Id')) {
     console.log("aucun Id n'a été trouvé pour la page");
 };
 
-// Récupération des infos produits via l'Id 
+// Connexion à l'API et récupération des data via l'ID
+
+const retrieveProductsData = async () => {
+    try {
+        const res = await fetch(`http://localhost:3000/api/products/${Id}`);
+        return await res.json();
+    } catch (err) {
+        console.alert('Argh!\nUne erreur!\n\n' + err);
+    }
+};
+
+// Récupération des infos produits
 
 const detailProductData = async () => {
-    const productData = await retrieveProductsData();
-    let product = {};
-    function choseProduct() {
-        if (productData[i]._id === Id) {
-            product = productData[i];
-            i = productData.length;
-        }
-    }
-    let i=0;
-    while (i <= productData.length) {
-        choseProduct(i);
-        i++;
-    };
+    const product = await retrieveProductsData();
     return {
         detailsProduct: product,
         colors: product.colors,
@@ -74,6 +62,6 @@ const fillProductPage = async () => {
             `<option value =${color}>${color}</option>`
         );
     }
-    
+
 };
 fillProductPage();
