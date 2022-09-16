@@ -8,7 +8,7 @@ if (searchParams.has('Id')) {
     Id = searchParams.get('Id');
 } else {
     console.log("aucun Id n'a été trouvé pour la page");
-};
+}
 
 // Connexion à l'API et récupération des data via l'ID
 
@@ -56,12 +56,79 @@ const fillProductPage = async () => {
     $title.innerText = await product.name;
     $price.innerText = await product.price;
     $description.innerText = await product.description;
-    for (let color of await product.colors){
+    for (const color of await product.colors) {
         $select.insertAdjacentHTML(
             'beforeend',
             `<option value =${color}>${color}</option>`
         );
     }
-
 };
 fillProductPage();
+
+// Gestion du panier///////////////////////////////
+
+function updateBasket(id, color, quantity) {
+    if (localStorage.length > 0) {
+        const basket = retrieveBasket();
+        addArtToBasket(id, color, quantity, basket);
+    } else {
+        const basket = [];
+        addArtToBasket(id, color, quantity, basket);
+    }
+}
+
+function retrieveBasket() {
+    // récupère le panier du local storage
+    const basketLinea = localStorage.getItem('basket');
+    const basket = JSON.parse(basketLinea);
+    for (let obj of basket) {
+        obj.quantity = parseInt(obj.quantity, 10);
+    }
+    return basket;
+}
+
+function createNewArticle(id, color, quantity) {
+    // création d'un nouvel article
+    const newArticle = {
+        id,
+        color,
+        quantity,
+    };
+    return newArticle;
+}
+
+function saveBasket(basket) {
+    // sauvegarde du panier sur le local storage
+    const basketLinea = JSON.stringify(basket);
+    localStorage.setItem('basket', basketLinea);
+    console.log('Voici le contenu de votre panier:');
+    basket.forEach((e) => console.log(e));
+}
+
+function addArtToBasket(id, color, quantity, basket) {
+    // ajoute un nouvel article au panier:
+    const newArticle = createNewArticle(id, color, quantity);
+    let duplicate = {}; 
+    if (basket.length > 0) {
+        duplicate = basket.find((e) => e.id === id && e.color === color);
+        if (duplicate !== undefined) {
+            duplicate.quantity = duplicate.quantity + quantity;
+        } else {
+          basket.push(newArticle);
+            // console.log(`this article has been added to basket: 
+            // id: ${newArticle.id}
+            // color: ${newArticle.color}
+            // quantity: ${newArticle.quantity}
+            // your basket has now ${basket.length} article(s)`);
+        }
+    } else {
+        basket.push(newArticle);
+    }
+    saveBasket(basket);
+}
+
+document.getElementById('addToCart').addEventListener('click', () => {
+    const colorArticle = document.getElementById('colors').value;
+    const nbArticles = document.getElementById('quantity').value;
+    updateBasket(`${Id}`, colorArticle, parseInt(nbArticles, 10));
+});
