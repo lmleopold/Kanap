@@ -1,62 +1,83 @@
-function retrieveBasket() {
-    // récupère le panier du local storage
-    const basketLinea = localStorage.getItem("basket");
-    const basket = JSON.parse(basketLinea);
-    for (let obj of basket) {
-        obj.quantity = parseInt(obj.quantity, 10);
-    }
-    return basket;
+// récupère le panier du local storage
+const basket = JSON.parse(localStorage.getItem("basket"));
+if (localStorage.length === 0) {
+    console.log("le panier est vide");
+} else {
+    console.log("basket: ", basket);
 }
+
 // Récupération des infos produits
-async function retrieveProductsData(id) {
+async function retrieveProductsData(artId) {
     try {
-        const res = await fetch(`http://localhost:3000/api/products/${id}`);
+        const res = await fetch(`http://localhost:3000/api/products/${artId}`);
         const product = await res.json();
         return {
-            name: product.name,
-            price: product.price,
-            imageUrl: product.imageUrl,
-            altTxt: product.altTxt,
+            artName: product.name,
+            artPrice: product.price,
+            artImageUrl: product.imageUrl,
+            artltTxt: product.altTxt,
         };
     } catch (err) {
         console.alert("Argh!\nUne erreur!\n\n" + err);
     }
 }
 
-function detailProductsData() {
-    let basket;
-    const productsData = {};
-    if (localStorage.length > 0) {
-        basket = retrieveBasket();
-        for (product of basket) {
-            const id = product.id;
-            // console.log (id);
-            async function detailData(id) {
-                productsData[`_${id}`] = await retrieveProductsData(id);
-                // console.table(productsData);
-                // return productsData.id;
-            }
-            detailData(id);
-        }
-    } else {
-        console.log("le panier est vide");
-    }
-    return productsData;
+const $cart__items = document.getElementById("cart__items");
+const productsData = {};
+let sumArtQuantity = 0;
+let totalPrice = 0;
+
+// Classement des éléments du panier
+// basket.sort(function compare(a, b) {
+//     if (a.id < b.id) return -1;
+//     if (a.id > b.id) return 1;
+//     return 0;
+// });
+// console.log("basket: ", basket);
+
+// Alimentation du DOM
+for (product of basket) {
+    const artId = product.id;
+    const artColor = product.color;
+    const artQuantity = product.quantity;
+    sumArtQuantity += artQuantity;
+
+    retrieveProductsData(artId)
+        .then((result) => {
+            productsData[artId] = result;
+            // console.log(productsData[artId]);
+            totalPrice += productsData[artId].artPrice * artQuantity;
+            // console.log(totalPrice);
+            $cart__items.insertAdjacentHTML(
+                "beforeend",
+                `<article class="cart__item" data-id="{artId}" data-color="{product-color}">
+        <div class="cart__item__img">
+        <img src="${productsData[artId].artImageUrl}" alt="${productsData[artId].artltTxt}">
+        </div>
+        <div class="cart__item__content">
+        <div class="cart__item__content__description">
+        <h2>${productsData[artId].artName}</h2>
+        <p>${artColor}</p>
+        <p>$${productsData[artId].artPrice} €</p>
+        </div>
+        <div class="cart__item__content__settings">
+        <div class="cart__item__content__settings__quantity">
+        <p>Qté : </p>
+        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${artQuantity}">
+        </div>
+        <div class="cart__item__content__settings__delete">
+        <p class="deleteItem">Supprimer</p>
+        </div>
+        </div>
+        </div>
+        </article>`
+            );
+            return totalPrice;
+        })
+        .then(
+            (totalPrice) =>
+                (document.getElementById("totalPrice").innerText = totalPrice)
+        );
 }
 
-const productsData = detailProductsData();
-console.log(productsData);
-console.log(Object.entries(productsData));
-
-// const article = document.getElementsByTagName("article");
-
-for (const id in productsData){
-    console.log("ok");
-    console.log(`${id}: ${productsData[id]}`);}
-    // $select.insertAdjacentHTML(
-    // 'beforeend',
-    //  `<option value =${color}>${color}</option>`
-    // );
-console.log('ok');
-
-// const createItem = async
+document.getElementById("totalQuantity").innerText = sumArtQuantity;
