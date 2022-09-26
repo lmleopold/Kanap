@@ -1,9 +1,12 @@
 // récupère le panier du local storage
-const basket = JSON.parse(localStorage.getItem("basket"));
-if (localStorage.length === 0) {
-    console.log("le panier est vide");
-} else {
+
+let basket = [];
+if (localStorage.length > 0 && localStorage.getItem("basket") !== null) {
+    basket = JSON.parse(localStorage.getItem('basket'));
     console.log("basket: ", basket);
+} else {
+    console.log("le panier est vide");
+    document.getElementsByTagName("h1").innerHTML += `Votre panier est vide`;
 }
 
 // Récupération des infos produits
