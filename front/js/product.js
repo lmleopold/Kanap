@@ -3,44 +3,39 @@
 const str = window.location.href;
 const url = new URL(str);
 const searchParams = new URLSearchParams(url.search);
-let Id;
+let id;
 if (searchParams.has('Id')) {
-    Id = searchParams.get('Id');
+    id = searchParams.get('Id');
 } else {
     console.log("aucun Id n'a été trouvé pour la page");
 }
 
 // Connexion à l'API et récupération des data via l'ID
 
-const retrieveProductsData = async () => {
+const optionsProductfromApi = async () => {
     try {
-        const res = await fetch(`http://localhost:3000/api/products/${Id}`);
-        return await res.json();
+        const res = await fetch(`http://localhost:3000/api/products/${id}`);
+        const product = await res.json();
+        // Récupération des infos produits
+        return {
+            colors: product.colors,
+            id: product._id,
+            name: product.name,
+            price: product.price,
+            imageUrl: product.imageUrl,
+            description: product.description,
+            altTxt: product.altTxt,
+        };
+
     } catch (err) {
         console.alert('Argh!\nUne erreur!\n\n' + err);
     }
 };
 
-// Récupération des infos produits
-
-const detailProductData = async () => {
-    const product = await retrieveProductsData();
-    return {
-        detailsProduct: product,
-        colors: product.colors,
-        id: product._id,
-        name: product.name,
-        price: product.price,
-        imageUrl: product.imageUrl,
-        description: product.description,
-        altTxt: product.altTxt,
-    };
-};
-
 // Remplissage de la page produit
 
 const fillProductPage = async () => {
-    const product = await detailProductData();
+    const product = await optionsProductfromApi();
 
     const $item__img = document.querySelector('.item__img');
     const $title = document.getElementById('title');
@@ -78,12 +73,18 @@ function updateBasket(id, color, quantity) {
     }
 }
 
-function createNewArticle(id, color, quantity) {
+async function createNewArticle(id, color, quantity) {
     // création d'un nouvel article
+    const product = await optionsProductfromApi();
     const newArticle = {
         id,
         color,
         quantity,
+        name: product.name,
+        price: product.price,
+        imageUrl: product.imageUrl,
+        description: product.description,
+        altTxt: product.altTxt,
     };
     return newArticle;
 }
@@ -96,9 +97,9 @@ function saveBasket(basket) {
     basket.forEach((e) => console.log(e));
 }
 
-function addArtToBasket(id, color, quantity, basket) {
+async function addArtToBasket(id, color, quantity, basket) {
     // ajoute un nouvel article au panier:
-    const newArticle = createNewArticle(id, color, quantity);
+    const newArticle = await createNewArticle(id, color, quantity);
     let duplicate = {}; 
     if (basket.length > 0) {
         duplicate = basket.find((e) => e.id === id && e.color === color);
@@ -115,6 +116,6 @@ function addArtToBasket(id, color, quantity, basket) {
 
 document.getElementById('addToCart').addEventListener('click', () => {
     const colorArticle = document.getElementById('colors').value;
-    const nbArticles = document.getElementById('quantity').value;
-    updateBasket(`${Id}`, colorArticle, parseInt(nbArticles, 10));
+    const nbArticles = parseInt(document.getElementById("quantity").value, 10);
+    updateBasket(id, colorArticle, nbArticles);
 });
