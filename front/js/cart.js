@@ -98,7 +98,6 @@ changeQuantity();
 const deleteTab = Array.from(document.querySelectorAll(".deleteItem"));
 
 function deleteItem() {
-    console.log("ok");
     for (const deleteButton of deleteTab) {
         deleteButton.addEventListener("click", function () {
             // On récupère la ligne du panier contenant l'élément à supprimer
@@ -127,3 +126,114 @@ function deleteItem() {
 }
 
 deleteItem();
+
+// Gestion du formulaire
+
+// Récupération des noeuds html du formulaire en Input
+const $firstName = document.getElementById("firstName");
+const $lastName = document.getElementById("lastName");
+const $address = document.getElementById("address");
+const $city = document.getElementById("city");
+const $email = document.getElementById("email");
+
+// Affiche msg si aucune info saisie
+const userInputsTab = [$firstName, $lastName, $address, $city, $email];
+
+for (const input of userInputsTab) {
+    if (input.value == "") {
+        console.log("vide");
+        input.nextElementSibling.innerText = "Veuillez remplir la case";
+    }
+}
+
+// Création des expressions régulières
+const firstNameRegExp = new RegExp("^[a-zA-Z-éèà-]+$");
+const lastNameRegexp = new RegExp("^[a-zA-Z-éèà -]+$");
+const addressRegExp = new RegExp("^([0-9]*) ?([a-zA-Z,. ])+");
+const cityNameRegexp = new RegExp("^[a-zA-Z-éèà -]+$");
+const emailRegExp = new RegExp(
+    "^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)+(.[a-z]{2,4})+$"
+);
+
+const regExpTab = [
+    firstNameRegExp,
+    lastNameRegexp,
+    addressRegExp,
+    cityNameRegexp,
+    emailRegExp,
+];
+
+let inputsIsValid = true;
+function verifyUserInputs() {
+for (let i = 0; i < userInputsTab.length; i++) {
+        userInputsTab[i].addEventListener("change", function () {
+            if (regExpTab[i].test(userInputsTab[i].value)) {
+                userInputsTab[i].nextElementSibling.innerText = "";
+            } else {
+                userInputsTab[i].nextElementSibling.innerText =
+                    "Saisie non valide";
+                inputsIsValid = false;
+            }
+        });
+    }
+    return inputsIsValid;
+}
+verifyUserInputs();
+
+function getId(basket) {
+    // récupère l'Id de chaque objet du panier
+    let tabId = [basket.map((product) => product.id)][0];
+    // enlève les Id en doublon (canapés identique en 2 couleurs distinctes)
+    let uniqueId = [...new Set(tabId)];
+    return uniqueId;
+}
+getId(basket);
+
+document
+    .querySelector(".cart__order__form__submit")
+    .addEventListener("click", function (e) {
+        e.preventDefault();
+        if (verifyUserInputs() == false) {
+            console.alert("Veuillez vérifier les saisies du formulaire");
+        } else {
+            const result = fetch("http://localhost:3000/api/products/order", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    contact: {
+                        firstName: $firstName.value,
+                        lastName: $lastName.value,
+                        address: $address.value,
+                        city: $city.value,
+                        email: $email.value,
+                    },
+                    products: getId,
+                }),
+            });
+            result.then(async (answer) => {
+                try {
+                    const data = await answer.json();
+                    window.location.href = `confirmation.html?id=${data.orderId}`;
+                    localStorage.clear();
+                } catch (e) {}
+            });
+        }
+    });
+
+// const firstNamePattern = $firstName.setAttribute("pattern", "[a-zA-Z-éèà]*");
+// const lastNamePattern = $lastName.setAttribute("pattern", "[a-zA-Z-éèà]*");
+// let patternCity = $city.setAttribute("pattern", "[a-zA-Z-éèà]*");
+
+//   let response = await fetch('/article/fetch/post/user', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json;charset=utf-8'
+//     },
+//     body: JSON.stringify(user)
+//   });
+
+//   let result = await response.json();
+//   alert(result.message);
