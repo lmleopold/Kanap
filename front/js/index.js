@@ -14,7 +14,7 @@ const retrieveProductsData = async () => {
 const detailProductData = async (index) => {
     const productData = await retrieveProductsData();
     const product = productData[index];
-
+    
     return {
         detailsProduct: product,
         colors: product.colors,
@@ -27,6 +27,10 @@ const detailProductData = async (index) => {
     };
 };
 
+// const productData = async () => {
+//     return await retrieveProductsData();
+// };
+// export default productData;
 // Remplissage de la rubrique Items (appel detailProductData)
 
 const createItem = async (index) => {
