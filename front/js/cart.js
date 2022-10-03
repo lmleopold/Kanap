@@ -55,6 +55,18 @@ async function balanceOfBasket() {
     return { sumArtQuantity, totalPrice };
 }
 
+async function basketSort() {
+    const basket = await basketWithPrice();
+
+    // Classement des éléments du panier
+    const basketSorted = basket.sort(function compare(a, b) {
+        if (a.id < b.id) return -1;
+        if (a.id > b.id) return 1;
+        return 0;
+    });
+    return basketSorted
+}
+
 // Alimentation du DOM
 async function domFeed() {
     // Efface l'affichage du panier dans le DOM
@@ -62,7 +74,7 @@ async function domFeed() {
         $cartItems.removeChild($cartItems.firstChild);
     }
 
-    const basket = await basketWithPrice();
+    const basket = await basketSort();
 
     for (const product of basket) {
         $cartItems.insertAdjacentHTML(
