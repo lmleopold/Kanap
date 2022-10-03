@@ -121,7 +121,7 @@ async function addArtToBasket(id, color, quantity, basket) {
         basket.push(newArticle);
     }
     saveBasket(basket);
-    window.alert("Votre article a été ajouté au panier");
+    // window.alert("Votre article a été ajouté au panier");
 }
 
 document.getElementById("addToCart").addEventListener("click", () => {
