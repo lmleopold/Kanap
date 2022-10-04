@@ -1,4 +1,6 @@
-// Récupération de l'ID du produit à afficher via l'URL
+// GESTION DE L'AFFICHAGE DES DONNEES DU PRODUIT
+
+// Récupère l'ID du produit à afficher via l'URL
 
 const str = window.location.href;
 const url = new URL(str);
@@ -10,9 +12,15 @@ if (searchParams.has("Id")) {
     console.log("aucun Id n'a été trouvé pour la page");
 }
 
-// Connexion à l'API et récupération des data via l'ID
+/**
+ * Se connecte à l'API Products et récupère le détail des options du produit ciblé par l'ID
+ * @param {String} id ID récupéré via l'URL
+ * @returns {Promise}
+ * @returns {Promise.resolve.Object.<colors: String[], id: String, name: String, price: Number, imageUrl:String, description: String, altTxt: String>}
+ * @returns {Promise.reject.<Error>} Error
+ */
 
-async function optionsProductfromApi (id) {
+async function optionsProductfromApi(id) {
     try {
         const res = await fetch(`http://localhost:3000/api/products/${id}`);
         const product = await res.json();
@@ -29,15 +37,17 @@ async function optionsProductfromApi (id) {
     } catch (err) {
         console.alert("Argh!\nUne erreur!\n\n" + err);
     }
-};
+}
 
-
-// Remplissage de la page produit
+/**
+ * Appelle la fonction optionsProductfromApi pour récupérer les options du produit
+ * Remplit la page produit à partir du détail des options
+ */
 
 const fillProductPage = async () => {
     const product = await optionsProductfromApi(id);
 
-    const $item__img = document.querySelector(".item__img");
+    const $itemImg = document.querySelector(".item__img");
     const $title = document.getElementById("title");
     const $price = document.getElementById("price");
     const $description = document.getElementById("description");
@@ -46,7 +56,7 @@ const fillProductPage = async () => {
     const $img = document.createElement("img");
     $img.src = await product.imageUrl;
     $img.alt = await product.altTxt;
-    $item__img.appendChild($img);
+    $itemImg.appendChild($img);
 
     $title.innerText = await product.name;
     $price.innerText = await product.price;
@@ -60,38 +70,68 @@ const fillProductPage = async () => {
 };
 fillProductPage();
 
-// Gestion du panier///////////////////////////////
+// GESTION DU PANIER
+
+/**
+ * Récupère le panier existant sur le local storage ou en crée un nouveau
+ * Vérifie la validité des données saisies dans la page produit: appelle verifyUserInputs
+ * @param {String} id ID récupéré via l'URL
+ * @param {String} color Couleur choisie par le client
+ * @param {Integer} quantity Quantité choisie par le client
+ * @returns {Function (id:String, color:String, quantity: String, basket: Object[])} verifyUserInputs
+ */
 
 function updateBasket(id, color, quantity) {
-    // Récupère le panier existant sur le local storage ou en crée un nouveau
+
+    let basket;
     if (localStorage.length > 0 && localStorage.getItem("basket") !== null) {
-        const basket = JSON.parse(localStorage.getItem("basket"));
-        verifyUserInputs(id, color, quantity, basket);
+        basket = JSON.parse(localStorage.getItem("basket"));
     } else {
-        const basket = [];
-        verifyUserInputs(id, color, quantity, basket);
+        basket = [];
     }
+    return verifyUserInputs(id, color, quantity, basket);
 }
+
+/**
+ * Vérifie si les informations saisies par le client en page produit sont valides:
+ * - si une couleur a été choisie
+ * - si le nombre d'articles est supérieure à 0
+ * Si oui ajoute l'article au panier (appelle addArtToBasket)
+ * @param {String} id ID récupéré via l'URL
+ * @param {String} color Couleur choisie par le client
+ * @param {Integer} quantity Quantité choisie par le client
+ * @param {Object[] | Array.<{id: String, name: String, imageUrl:String, description: String, altTxt: String}} basket
+ * Tabeau vide ou tableau d'objets si le panier contient des articles
+ * @returns {window.alert | Function (id:String, color:String, quantity:String, basket: Object[])} window.alert | addArtToBasket
+ */
 
 function verifyUserInputs(id, color, quantity, basket) {
     if (color === "") {
-        window.alert("Veuillez d'abord choisir une couleur");
+        return window.alert("Veuillez d'abord choisir une couleur");
     } else if (quantity < 1) {
-        window.alert("Le nombre d'articles doit être au moins égal à 1");
+        return window.alert("Le nombre d'articles doit être au moins égal à 1");
     } else {
-        addArtToBasket(id, color, quantity, basket);
+        return addArtToBasket(id, color, quantity, basket);
     }
 }
 
+/**
+ * Renvoie un objet "nouvel article" comprenant:
+ * - des caractéristiques saisies par le client en page produit (id, color, quantity)
+ * - des options du produit founies par l'API Product (name, imageUrl, description, altTxt)
+ * @param {String} id 
+ * @param {String} color 
+ * @param {Integer} quantity 
+ * @returns {Object.<id: String, color: String, quantity: Integer, name: String, imageUrl: String, description: String, altTxt: String} newArticle
+ */
+
 async function createNewArticle(id, color, quantity) {
-    // création d'un nouvel article
     const product = await optionsProductfromApi(id);
     const newArticle = {
         id,
         color,
         quantity,
         name: product.name,
-        // price: product.price,
         imageUrl: product.imageUrl,
         description: product.description,
         altTxt: product.altTxt,
@@ -99,13 +139,28 @@ async function createNewArticle(id, color, quantity) {
     return newArticle;
 }
 
+/**
+ * Sauvegarde le panier sur le local storage:
+ * le panier contient toutes les informations sur l'article sauf le prix
+ * @param {Object[]} basket
+ */
+
 function saveBasket(basket) {
-    // sauvegarde du panier sur le local storage
     const basketLinea = JSON.stringify(basket);
     localStorage.setItem("basket", basketLinea);
-    console.log("Voici le contenu de votre panier:");
-    basket.forEach((e) => console.log(e));
 }
+
+/**
+ * Appelle la fonction createNewArticle pour créer un nouvel article
+ * Regarde s'il existe déjà un article dans le panier avec même ID + même color:
+ * - si oui: met à jour la quantité
+ * - si non: ajoute l'article au panier (sans le prix)
+ * Appelle la fonction saveBasket pour sauvegarder le panier sur le local storage
+ * @param {String} id
+ * @param {String} color
+ * @param {Integer} quantity
+ * @param {Object[]} basket
+ */
 
 async function addArtToBasket(id, color, quantity, basket) {
     // ajoute un nouvel article au panier:
@@ -120,12 +175,18 @@ async function addArtToBasket(id, color, quantity, basket) {
     } else {
         basket.push(newArticle);
     }
-    saveBasket(basket);
-    // window.alert("Votre article a été ajouté au panier");
+    saveBasket(basket); // sauvegarde le panier sur le local storage
 }
 
+/**
+ * Ajoute un écouteur d'évènement sur le bouton "commander":
+ * Au "click" :
+ * - récupère la couleur choisie par le client
+ * - récupère le quantité saisie (au format String) et la converti au format Number
+ * - Appelle la fonction "updateBasket" pour mettre à jour le panier
+ */
 document.getElementById("addToCart").addEventListener("click", () => {
-    const colorArticle = document.getElementById("colors").value;
-    const nbArticles = parseInt(document.getElementById("quantity").value, 10);
-    updateBasket(id, colorArticle, nbArticles);
+    const color = document.getElementById("colors").value;
+    const quantity = parseInt(document.getElementById("quantity").value, 10);
+    updateBasket(id, color, quantity);
 });

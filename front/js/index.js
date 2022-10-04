@@ -1,4 +1,9 @@
-// Connexion à l'API
+/**
+ * Récupère l'ensemble de la BDD produits via l'API Products
+ * @returns {Promise}
+ * @returns {Promise.resolve.Array.<Object>} Tableau contenant un objet/produit présent dans la BDD
+ * @returns {Promise.reject<Error>}
+ */
 
 const retrieveProductsData = async () => {
     try {
@@ -9,18 +14,19 @@ const retrieveProductsData = async () => {
     }
 };
 
-// Récupération des infos relatives à chaque produit
-
-const detailProductData = async (index) => {
+/**
+ * Récupère le détail des options du produit ciblé en index
+ * @param {Integer} index
+ * @returns {Promise.Object.<colors:[String], id: String, name: String, imageUrl:String, description: String, altTxt: String>}
+ */
+const optionsProductfromApi = async (index) => {
     const productData = await retrieveProductsData();
     const product = productData[index];
-    
+
     return {
-        detailsProduct: product,
         colors: product.colors,
         id: product._id,
         name: product.name,
-        price: product.price,
         imageUrl: product.imageUrl,
         description: product.description,
         altTxt: product.altTxt,
@@ -31,11 +37,16 @@ const detailProductData = async (index) => {
 //     return await retrieveProductsData();
 // };
 // export default productData;
-// Remplissage de la rubrique Items (appel detailProductData)
 
+/**
+ * Pour la ligne de la BDD produits ciblée en index:
+ * récupère le détail des options du produit (appelle optionsProductfromApi)
+ * et affiche ces éléments dans le DOM
+ * @param {Integer} index
+ */
 const createItem = async (index) => {
     const items = document.getElementById("items");
-    const product = await detailProductData(index);
+    const product = await optionsProductfromApi(index);
 
     const link = document.createElement("a");
     link.setAttribute("href", `./product.html?Id=${product.id}`);
@@ -60,12 +71,13 @@ const createItem = async (index) => {
     article.appendChild(productDescription);
 };
 
-// Main récupère la BDD produits via l'API (appel retrieveProductsData)
-// On créé un item en page d'acceuil (appel createItem) pour chaque produit
-
+/**
+ * Récupère la BDD produits
+ * Crée un Item sur la page d'Acceuil pour chaque ligne de la BDD
+ */
 const main = async () => {
     const productData = await retrieveProductsData();
-    await productData.forEach(function (element, index) {
+    await productData.forEach((element, index) => {
         createItem(index);
     });
 };
