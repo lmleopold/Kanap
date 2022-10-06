@@ -37,7 +37,6 @@ function retrieveBasket() {
     if (localStorage.length > 0 && localStorage.getItem("basket") !== null) {
         basket = JSON.parse(localStorage.getItem("basket"));
     } else {
-        console.log("le panier est vide");
         document.querySelector("h1").innerText = "Votre panier \n est vide";
     }
     return basket;
@@ -147,7 +146,7 @@ async function domFeed() {
             <div class="cart__item__content__description">
                         <h2>${product.name}</h2>
                         <p>${product.color}</p>
-                        <p>$${product.price} €</p>
+                        <p>${product.price} €</p>
                     </div>
                     <div class="cart__item__content__settings">
                         <div class="cart__item__content__settings__quantity">
@@ -243,6 +242,7 @@ async function deleteItem(deleteButton) {
     basket.splice(indexToDelete, 1);
     // Supprime le noeud HTML contenant le bouton cliqué
     $cartItems.removeChild(deleteButton.closest("article"));
+    document.querySelector("h1").innerText = "Votre panier \n est vide";
     // Sauvegarde le panier dans le local storage
     localStorage.setItem("basket", JSON.stringify(basket));
     // Met à jour le nb d'articles et le prix affiché du panier
@@ -280,12 +280,12 @@ const $lastName = document.getElementById("lastName");
 const $address = document.getElementById("address");
 const $city = document.getElementById("city");
 const $email = document.getElementById("email");
-const userInputsTab = [$firstName, $lastName, $address, $city, $email];
+const formInputsTab = [$firstName, $lastName, $address, $city, $email];
 
 // Affiche msg d'alerte si aucune info saisie
-for (const input of userInputsTab) {
+for (const input of formInputsTab) {
     if (input.value === "") {
-        input.nextElementSibling.innerText = "Veuillez remplir la case";
+        input.nextElementSibling.innerText = "*";
     }
 }
 
@@ -308,17 +308,17 @@ $email.setAttribute(
  */
 
 const inputIsValid = [];
-for (let i = 0; i < userInputsTab.length; i++) {
+for (let i = 0; i < formInputsTab.length; i++) {
     inputIsValid[i] = false;
-    userInputsTab[i].addEventListener("change", function verifyUserInputs() {
-        if (userInputsTab[i].checkValidity()) { // si le Pattern de l'Input est respecté le test est validé
-            userInputsTab[i].nextElementSibling.innerText = ""; // pas de msg d'alerte
+    formInputsTab[i].addEventListener("blur", function verifyUserInputs() {
+        if (formInputsTab[i].checkValidity()) { // si le Pattern de l'Input est respecté le test est validé
+            formInputsTab[i].nextElementSibling.innerText = ""; // pas de msg d'alerte
             inputIsValid[i] = true;
-        } else if (userInputsTab[i] === "") {
-            userInputsTab[i].nextElementSibling.innerText =
+        } else if (formInputsTab[i] === "") {
+            formInputsTab[i].nextElementSibling.innerText =
                 "Veuillez remplir la case";
         } else {
-            userInputsTab[i].nextElementSibling.innerText = "Saisie non valide";
+            formInputsTab[i].nextElementSibling.innerText = "Saisie non valide";
         }
         return inputIsValid;
     });
@@ -331,18 +331,10 @@ for (let i = 0; i < userInputsTab.length; i++) {
  * @returns {Boolean} InputsAreValid
  */
 
-function checkInputsValidity() {
-    let InputsAreValid = false;
-    let nbInputsValid = 0;
-    for (let i = 0; i < userInputsTab.length; i++) {
-        if (inputIsValid[i]) {
-            nbInputsValid++;
-        }
-    }
-    if (nbInputsValid === userInputsTab.length) {
-        InputsAreValid = true;
-    }
-    return InputsAreValid;
+function formInputsAreValid() {
+    let inputsAreValid = true;
+    inputIsValid.forEach((input) => (inputsAreValid = inputsAreValid && input));
+    return inputsAreValid;
 }
 
 /**
@@ -403,7 +395,7 @@ function getIdIsValid(basketWithPrice) {
         return idIsAString;
     });
     // Renvoi True si les 2 conditions sont ok
-    if (getIdIsEmpty === false && idIsAString === true) {
+    if (!getIdIsEmpty && idIsAString) {
         return true;
     } else {
         return false;
@@ -426,7 +418,7 @@ document
     .querySelector(".cart__order__form__submit")
     .addEventListener("click", async function (e) {
         e.preventDefault();
-        if (checkInputsValidity() === false) {
+        if (formInputsAreValid() === false) {
             window.alert("Veuillez vérifier les saisies dans le formulaire");
         } else if (getIdIsValid(await basketAndPrice()) === false) {
             window.alert(

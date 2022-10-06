@@ -33,11 +33,6 @@ const optionsProductfromApi = async (index) => {
     };
 };
 
-// const productData = async () => {
-//     return await retrieveProductsData();
-// };
-// export default productData;
-
 /**
  * Pour la ligne de la BDD produits ciblée en index:
  * récupère le détail des options du produit (appelle optionsProductfromApi)
