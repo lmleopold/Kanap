@@ -16,9 +16,9 @@ lequel l'utilisateur a cliqué depuis la page d’accueil. Depuis cette page, l�
 peut sélectionner une quantité, une couleur, et ajouter le produit à son panier.
 
 * Une page “panier”. Celle-ci contient plusieurs parties :
-  ● Un résumé des produits dans le panier, le prix total et la possibilité de
+  * Un résumé des produits dans le panier, le prix total et la possibilité de
     modifier la quantité d’un produit sélectionné ou bien de supprimer celui-ci.
-  ● Un formulaire permettant de passer une commande. Les données du
+  * Un formulaire permettant de passer une commande. Les données du
     formulaire doivent être correctes et bien formatées avant d'être renvoyées au
     back-end. Par exemple, pas de chiffre dans un champ prénom.
     
