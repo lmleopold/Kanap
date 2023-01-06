@@ -1,32 +1,34 @@
 {
-  "name": "p5-dev-web-kanap-1",
-  "version": "1.0.0",
-  "description": "This is the front end and back end server for Project 5 of the Web Developer path.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ./front/",
-    "eslint": "eslint ./front/ --fix"
-
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lmleopold/P5-Dev-Web-Kanap.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/lmleopold/P5-Dev-Web-Kanap/issues"
-  },
-  "homepage": "https://github.com/lmleopold/P5-Dev-Web-Kanap#readme",
-  "devDependencies": {
-    "eslint": "^8.23.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.2.5",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-promise": "^6.0.1"
-  }
+    "name": "p5-dev-web-kanap-1",
+    "version": "1.0.0",
+    "description": "This is the front end and back end server for Project 5 of the Web Developer path.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "lint": "eslint ./front/",
+        "eslint": "eslint ./front/ --fix"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lmleopold/P5-Dev-Web-Kanap.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/lmleopold/P5-Dev-Web-Kanap/issues"
+    },
+    "homepage": "https://github.com/lmleopold/P5-Dev-Web-Kanap#readme",
+    "devDependencies": {
+        "eslint": "^8.23.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-config-standard": "^17.0.0",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-n": "^15.2.5",
+        "eslint-plugin-prettier": "^4.2.1",
+        "eslint-plugin-promise": "^6.0.1"
+    },
+    "dependencies": {
+        "http-server": "^14.1.1"
+    }
 }
