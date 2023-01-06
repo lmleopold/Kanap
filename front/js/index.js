@@ -7,7 +7,9 @@
 
 const retrieveProductsData = async () => {
     try {
-        const res = await fetch("http://localhost:3000/api/products");
+        const res = await fetch(
+            "https://kanap-production-1eff.up.railway.app/api/products"
+        );
         return await res.json();
     } catch (err) {
         console.alert("Argh!\nUne erreur!\n\n" + err);

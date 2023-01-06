@@ -22,7 +22,9 @@ if (searchParams.has("Id")) {
 
 async function optionsProductfromApi(id) {
     try {
-        const res = await fetch(`http://localhost:3000/api/products/${id}`);
+        const res = await fetch(
+            `https://kanap-production-1eff.up.railway.app/api/products/${id}`
+        );
         const product = await res.json();
         // Récupération des infos produits
         return {
@@ -82,7 +84,6 @@ fillProductPage();
  */
 
 function updateBasket(id, color, quantity) {
-
     let basket;
     if (localStorage.length > 0 && localStorage.getItem("basket") !== null) {
         basket = JSON.parse(localStorage.getItem("basket"));
@@ -119,9 +120,9 @@ function verifyUserInputs(id, color, quantity, basket) {
  * Renvoie un objet "nouvel article" comprenant:
  * - des caractéristiques saisies par le client en page produit (id, color, quantity)
  * - des options du produit founies par l'API Product (name, imageUrl, description, altTxt)
- * @param {String} id 
- * @param {String} color 
- * @param {Integer} quantity 
+ * @param {String} id
+ * @param {String} color
+ * @param {Integer} quantity
  * @returns {Object.<id: String, color: String, quantity: Integer, name: String, imageUrl: String, description: String, altTxt: String} newArticle
  */
 

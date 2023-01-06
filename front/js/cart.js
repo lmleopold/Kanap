@@ -10,7 +10,9 @@
 
 async function optionsProductfromApi(id) {
     try {
-        const res = await fetch(`http://localhost:3000/api/products/${id}`);
+        const res = await fetch(
+            `https://kanap-production-1eff.up.railway.app/api/products/${id}`
+        );
         const product = await res.json();
         return product.price;
     } catch (err) {
@@ -225,7 +227,7 @@ async function changeQuantity() {
  * Supprime l'article du panier
  * Supprime le noeud HTML contenant le bouton cliqué
  * Sauvegarde le panier dans le local storage
- * Met à jour le nb d'articles et le prix affiché du panier * 
+ * Met à jour le nb d'articles et le prix affiché du panier *
  * @param {HTMLButtonElement} deleteButton
  */
 
@@ -311,7 +313,8 @@ const inputIsValid = [];
 for (let i = 0; i < formInputsTab.length; i++) {
     inputIsValid[i] = false;
     formInputsTab[i].addEventListener("blur", function verifyUserInputs() {
-        if (formInputsTab[i].checkValidity()) { // si le Pattern de l'Input est respecté le test est validé
+        if (formInputsTab[i].checkValidity()) {
+            // si le Pattern de l'Input est respecté le test est validé
             formInputsTab[i].nextElementSibling.innerText = ""; // pas de msg d'alerte
             inputIsValid[i] = true;
         } else if (formInputsTab[i] === "") {
@@ -365,7 +368,7 @@ function getId(basketWithPrice) {
  * Vérifie si les données du panier sont valides avant l'envoi de la commande:
  * - le tableau d'ID n'est pas vide
  * - les ID sont bien toutes au format "String"
- * 
+ *
  * @param {Object[]} basketWithPrice
  * @param {Object} product
  * @param {String} product.color
@@ -425,23 +428,26 @@ document
                 "Votre panier est vide: veuillez choisir au moins un article"
             );
         } else {
-            const result = fetch("http://localhost:3000/api/products/order", {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    contact: {
-                        firstName: $firstName.value,
-                        lastName: $lastName.value,
-                        address: $address.value,
-                        city: $city.value,
-                        email: $email.value,
+            const result = fetch(
+                "https://kanap-production-1eff.up.railway.app/api/products/order",
+                {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
                     },
-                    products: getId(await basketAndPrice()),
-                }),
-            });
+                    body: JSON.stringify({
+                        contact: {
+                            firstName: $firstName.value,
+                            lastName: $lastName.value,
+                            address: $address.value,
+                            city: $city.value,
+                            email: $email.value,
+                        },
+                        products: getId(await basketAndPrice()),
+                    }),
+                }
+            );
             result.then(async (answer) => {
                 try {
                     const data = await answer.json();
