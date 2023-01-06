@@ -6,7 +6,8 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "lint": "eslint ./front/",
-        "eslint": "eslint ./front/ --fix"
+        "eslint": "eslint ./front/ --fix",
+        "start": "http-server -p 8080"
     },
     "repository": {
         "type": "git",
