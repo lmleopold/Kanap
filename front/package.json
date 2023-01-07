@@ -7,7 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "lint": "eslint ./front/",
         "eslint": "eslint ./front/ --fix",
-        "start": "http-server -p 8080"
+        "start": "http-server -p 8080 -c-1 -a 0.0.0.0"
     },
     "repository": {
         "type": "git",
