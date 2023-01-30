@@ -8,7 +8,7 @@
 const retrieveProductsData = async () => {
     try {
         const res = await fetch(
-            "https://kanap-production-1eff.up.railway.app/api/products"
+            "https://kanap-backend2.onrender.com/api/products"
         );
         return await res.json();
     } catch (err) {

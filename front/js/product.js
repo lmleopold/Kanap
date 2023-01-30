@@ -23,7 +23,7 @@ if (searchParams.has("Id")) {
 async function optionsProductfromApi(id) {
     try {
         const res = await fetch(
-            `https://kanap-production-1eff.up.railway.app/api/products/${id}`
+            `https://kanap-backend2.onrender.com/api/products/${id}`
         );
         const product = await res.json();
         // Récupération des infos produits

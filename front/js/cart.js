@@ -11,7 +11,7 @@
 async function optionsProductfromApi(id) {
     try {
         const res = await fetch(
-            `https://kanap-production-1eff.up.railway.app/api/products/${id}`
+            `https://kanap-backend2.onrender.com/api/products/${id}`
         );
         const product = await res.json();
         return product.price;
@@ -429,7 +429,7 @@ document
             );
         } else {
             const result = fetch(
-                "https://kanap-production-1eff.up.railway.app/api/products/order",
+                "https://kanap-backend2.onrender.com/api/products/order",
                 {
                     method: "POST",
                     headers: {
