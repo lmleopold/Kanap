@@ -14,7 +14,7 @@ async function optionsProductfromApi(id) {
         const product = await res.json();
         return product.price;
     } catch (err) {
-        console.alert("Argh!\nUne erreur!\n\n" + err);
+        console.error("Argh!\nUne erreur!\n\n" + err);
     }
 }
 
@@ -225,7 +225,7 @@ async function changeQuantity() {
  * Supprime l'article du panier
  * Supprime le noeud HTML contenant le bouton cliqué
  * Sauvegarde le panier dans le local storage
- * Met à jour le nb d'articles et le prix affiché du panier * 
+ * Met à jour le nb d'articles et le prix affiché du panier *
  * @param {HTMLButtonElement} deleteButton
  */
 
@@ -311,7 +311,8 @@ const inputIsValid = [];
 for (let i = 0; i < formInputsTab.length; i++) {
     inputIsValid[i] = false;
     formInputsTab[i].addEventListener("blur", function verifyUserInputs() {
-        if (formInputsTab[i].checkValidity()) { // si le Pattern de l'Input est respecté le test est validé
+        if (formInputsTab[i].checkValidity()) {
+            // si le Pattern de l'Input est respecté le test est validé
             formInputsTab[i].nextElementSibling.innerText = ""; // pas de msg d'alerte
             inputIsValid[i] = true;
         } else if (formInputsTab[i] === "") {
@@ -365,7 +366,7 @@ function getId(basketWithPrice) {
  * Vérifie si les données du panier sont valides avant l'envoi de la commande:
  * - le tableau d'ID n'est pas vide
  * - les ID sont bien toutes au format "String"
- * 
+ *
  * @param {Object[]} basketWithPrice
  * @param {Object} product
  * @param {String} product.color
@@ -448,7 +449,7 @@ document
                     window.location.href = `confirmation.html?id=${data.orderId}`;
                     localStorage.clear();
                 } catch (err) {
-                    console.alert("Argh!\nUne erreur!\n\n" + err);
+                    console.error("Argh!\nUne erreur!\n\n" + err);
                 }
             });
         }
