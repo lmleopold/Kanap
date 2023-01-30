@@ -21,7 +21,7 @@ async function optionsProductfromApi(id) {
 /**
  * Récupère les données du panier stockées dans le local storage
  * Retourne un tableau contenant les articles sous forme d'objets
- * @returns {Object[]}
+ * @returns {Object[]} basket
  * @returns {Object} product
  * @returns {String} product.id
  * @returns {String} product.color
