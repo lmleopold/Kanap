@@ -16,7 +16,7 @@ async function optionsProductfromApi(id) {
         const product = await res.json();
         return product.price;
     } catch (err) {
-        console.alert("Argh!\nUne erreur!\n\n" + err);
+        console.log("Argh!\nUne erreur!\n\n" + err);
     }
 }
 
@@ -454,7 +454,7 @@ document
                     window.location.href = `confirmation.html?id=${data.orderId}`;
                     localStorage.clear();
                 } catch (err) {
-                    console.alert("Argh!\nUne erreur!\n\n" + err);
+                    console.log("Argh!\nUne erreur!\n\n" + err);
                 }
             });
         }

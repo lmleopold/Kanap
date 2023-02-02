@@ -37,7 +37,7 @@ async function optionsProductfromApi(id) {
             altTxt: product.altTxt,
         };
     } catch (err) {
-        console.alert("Argh!\nUne erreur!\n\n" + err);
+        console.log("Argh!\nUne erreur!\n\n" + err);
     }
 }
 

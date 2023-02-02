@@ -12,7 +12,7 @@ const retrieveProductsData = async () => {
         );
         return await res.json();
     } catch (err) {
-        console.alert("Argh!\nUne erreur!\n\n" + err);
+        console.log("Argh!\nUne erreur!\n\n" + err);
     }
 };
 
