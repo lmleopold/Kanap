@@ -35,7 +35,7 @@ async function optionsProductfromApi(id) {
             altTxt: product.altTxt,
         };
     } catch (err) {
-        console.alert("Argh!\nUne erreur!\n\n" + err);
+        console.error("Argh!\nUne erreur!\n\n" + err);
     }
 }
 
@@ -82,7 +82,6 @@ fillProductPage();
  */
 
 function updateBasket(id, color, quantity) {
-
     let basket;
     if (localStorage.length > 0 && localStorage.getItem("basket") !== null) {
         basket = JSON.parse(localStorage.getItem("basket"));
@@ -119,9 +118,9 @@ function verifyUserInputs(id, color, quantity, basket) {
  * Renvoie un objet "nouvel article" comprenant:
  * - des caractéristiques saisies par le client en page produit (id, color, quantity)
  * - des options du produit founies par l'API Product (name, imageUrl, description, altTxt)
- * @param {String} id 
- * @param {String} color 
- * @param {Integer} quantity 
+ * @param {String} id
+ * @param {String} color
+ * @param {Integer} quantity
  * @returns {Object.<id: String, color: String, quantity: Integer, name: String, imageUrl: String, description: String, altTxt: String} newArticle
  */
 
